@@ -42,5 +42,10 @@ if __name__ == "__main__":
 	import numpy as np
 	wav_as_list = WaveFileParser.parseWavFile("test.wav", 10001, 10000)
 	wav_as_np_arr = np.array(wav_as_list)
-	plt.plot(wav_as_np_arr)
+	plt.specgram(wave.open("test.wav", "rb"))
 	plt.show()
+
+	# Check spectogram of wave
+	import scipy.io.wavfile as wavfile
+	rate, frames = wavfile.read("test.wav")
+	plt.specgram(frames, 1000, 25)

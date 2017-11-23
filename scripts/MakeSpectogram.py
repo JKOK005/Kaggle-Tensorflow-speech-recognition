@@ -57,5 +57,5 @@ if __name__ == "__main__":
 	import matplotlib.pyplot as plt 
 	sample_spectogram = np.array(spectogram_arr[25])
 	freq_range = spectogram.getFreqRange(len(sample_spectogram))
-	plt.plot(freq_range, sample_spectogram)
+	plt.specgram(spectogram_arr)
 	plt.show()
