@@ -18,10 +18,15 @@ class MakeSpectogram(object):
 	def setSmplInterval(self, interval):
 		self.smpl_interval 	= interval
 
-	def getFreqRange(self, smpl_len):
-		permissible_freq 	= self.framerate / 2
-		half_smpl_len 		= int(smpl_len / 2)
-		return np.linspace(0, permissible_freq, half_smpl_len)
+	def getFreqRange(self, smpl_interval_size):
+		permissible_freq 		= self.framerate / 2
+		half_smpl_interval_size = int(smpl_interval_size / 2)
+		return np.linspace(0, permissible_freq, half_smpl_interval_size)
+
+	def getTimeRange(self, total_smpl_size):
+		time_range = np.array([i*self.smpl_interval for i in range(total_smpl_size)])
+		time_range_offset = time_range + self.smpl_interval
+		return time_range_offset
 
 	def mapToFFT(self, arr):
 		fft_arr 	= sc.fft(arr)
@@ -43,9 +48,12 @@ if __name__ == "__main__":
 	spectogram = MakeSpectogram("test.wav")
 	spectogram.setSmplInterval(0.020)
 	spectogram_arr = spectogram.create()
-	print(spectogram.getFreqRange(len(spectogram_arr[0])))
 
-	# Visualization 
+	# Print frequency band and time series range
+	print(spectogram.getFreqRange(len(spectogram_arr[0])))
+	print(spectogram.getTimeRange(len(spectogram_arr)))
+
+	# Visualization of fft band for Nth interval
 	import matplotlib.pyplot as plt 
 	sample_spectogram = np.array(spectogram_arr[10])
 	plt.plot(sample_spectogram)
