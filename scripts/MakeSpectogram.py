@@ -19,9 +19,8 @@ class MakeSpectogram(object):
 		self.smpl_interval 	= interval
 
 	def getFreqRange(self, smpl_interval_size):
-		permissible_freq 		= self.framerate / 2
-		half_smpl_interval_size = int(smpl_interval_size / 2)
-		return np.linspace(0, permissible_freq, half_smpl_interval_size)
+		freq_range = np.linspace(0, self.framerate, smpl_interval_size *2)
+		return freq_range[:smpl_interval_size]
 
 	def getTimeRange(self, total_smpl_size):
 		time_range = np.array([i*self.smpl_interval for i in range(total_smpl_size)])
@@ -29,8 +28,9 @@ class MakeSpectogram(object):
 		return time_range_offset
 
 	def mapToFFT(self, arr):
-		fft_arr 	= sc.fft(arr)
-		return map(abs, fft_arr)
+		fft_arr 		= sc.fft(arr)
+		valid_arr_range = len(arr) / 2
+		return map(abs, fft_arr[:valid_arr_range])
 
 	def create(self):
 		period 			= 1.0 / self.framerate
@@ -55,6 +55,7 @@ if __name__ == "__main__":
 
 	# Visualization of fft band for Nth interval
 	import matplotlib.pyplot as plt 
-	sample_spectogram = np.array(spectogram_arr[10])
-	plt.plot(sample_spectogram)
+	sample_spectogram = np.array(spectogram_arr[25])
+	freq_range = spectogram.getFreqRange(len(sample_spectogram))
+	plt.plot(freq_range, sample_spectogram)
 	plt.show()
