@@ -53,9 +53,22 @@ if __name__ == "__main__":
 	print(spectogram.getFreqRange(len(spectogram_arr[0])))
 	print(spectogram.getTimeRange(len(spectogram_arr)))
 
-	# Visualization of fft band for Nth interval
 	import matplotlib.pyplot as plt 
-	sample_spectogram = np.array(spectogram_arr[25])
-	freq_range = spectogram.getFreqRange(len(sample_spectogram))
-	plt.specgram(spectogram_arr)
+	import seaborn as sns
+
+	y_time = spectogram.getTimeRange(len(spectogram_arr))
+	x_freq = spectogram.getFreqRange(len(spectogram_arr[0]))
+
+	sample_spectogram = np.array(spectogram_arr[8])
+	spectogram_to_nparr = np.array(spectogram_arr)
+	fig, ax = plt.subplots(2,1)
+	# Visualization of single fft band for Nth interval
+	ax[0].plot(x_freq, sample_spectogram)
+	ax[0].set_xlabel('Frequency band (Hz)')
+	ax[0].set_ylabel('FFT response') 	
+	# Visualization of spectogram via heatmap
+	sns.heatmap(spectogram_to_nparr, ax=ax[1], cmap='RdBu_r')
+	ax[1].set_xlabel('Frequency band (bins)')
+	ax[1].set_ylabel('Sample count')
 	plt.show()
+
