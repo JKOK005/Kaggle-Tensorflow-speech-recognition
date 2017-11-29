@@ -6,15 +6,11 @@ class ModelInterface(object):
 		raise NotImplementedError("Class must implement the builder function build")
 
 	@abstractmethod
-	def getModel(self):
-		raise NotImplementedError("Class must implement the getModel method")
-
-	@abstractmethod
-	def loadNodelParams(self):
+	def loadModelParams(self):
 		raise NotImplementedError("Class must implement the loading model parameters function")
 
 	@abstractmethod
-	def startTraining(self):
+	def startTraining(self, data, labels):
 		raise NotImplementedError("Class must implement the start training function")
 
 	@abstractmethod
