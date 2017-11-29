@@ -2,6 +2,7 @@ import tensorflow as tf
 from ModelInterface import ModelInterface
 from tensorflow.contrib import rnn
 from LossUtilCOR import LossCORHeader
+from OptimizerUtilCOR import OptimizerCORHeader
 
 class SingleLayerLSTMNetwork(ModelInterface):
 		timesteps 		= None
@@ -53,15 +54,13 @@ class SingleLayerLSTMNetwork(ModelInterface):
 			return self
 
 		def __getLoss(self, loss_type):
-			loss = None
 			output_tensor = tf.placeholder(tf.float32, [None, self.num_output]) 
 			loss_fn = LossCORHeader.get(loss_type)
 			return tf.reduce_mean(loss_fn(logits=self.__prediction, labels=output_tensor))
 
 		def __getOptimizer(self, optimizer_type, learning_rate):
-			optimizer = None
-			if(optimizer_type == 'gradient_descent'):
-				optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+			optimizer_fn 	= OptimizerCORHeader.get(optimizer_type)			
+			optimizer 		= optimizer_fn(learning_rate=learning_rate)
 			return optimizer
 
 		def __setObjective(self):
