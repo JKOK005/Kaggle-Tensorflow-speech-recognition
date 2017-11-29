@@ -92,16 +92,11 @@ class SingleLayerLSTMNetwork(ModelInterface):
 			data_placeholder 	= self.__input_tensor
 			labels_placeholder 	= self.__output_tensor	
 
-			import h5py
-			up_data = h5py.File('up.hdf5', 'r+')
-			up_label = h5py.File('up_label.hdf5', 'r+')
-
 			with tf.Session() as sess:
 				sess.run(init_var)
-
 				for _ in range(epoch):
-					sess.run(self.__objective, feed_dict={data_placeholder: up_data['data'][0:], labels_placeholder: up_label['data'][0:]})
-					loss = sess.run(self.__loss, feed_dict={data_placeholder: up_data['data'][0:], labels_placeholder: up_label['data'][0:]})
+					sess.run(self.__objective, feed_dict={data_placeholder: data, labels_placeholder: labels})
+					loss = sess.run(self.__loss, feed_dict={data_placeholder: data, labels_placeholder: labels})
 					print("Loss: {0}".format(loss))
 
 if __name__ == "__main__":
@@ -109,4 +104,9 @@ if __name__ == "__main__":
 	lstm.setHiddenUnits(100).setInputSize(160).setOutputSize(12).setTimeSteps(49) \
 		.setLossFunction('cross_enthropy').setOptimizer('gradient_descent').setLearningRate(0.05) \
 		.build()
-	lstm.startTraining(data=None, labels=None, epoch=1)
+
+	import h5py
+	data 	= h5py.File('up.hdf5', 'r+')
+	label 	= h5py.File('up_label.hdf5', 'r+')
+
+	lstm.startTraining(data=data['data'], labels=label['data'], epoch=20)
