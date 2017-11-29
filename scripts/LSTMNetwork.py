@@ -1,6 +1,7 @@
 import tensorflow as tf 
 from ModelInterface import ModelInterface
 from tensorflow.contrib import rnn
+from LossUtilCOR import LossCORHeader
 
 class SingleLayerLSTMNetwork(ModelInterface):
 		timesteps 		= None
@@ -54,10 +55,8 @@ class SingleLayerLSTMNetwork(ModelInterface):
 		def __getLoss(self, loss_type):
 			loss = None
 			output_tensor = tf.placeholder(tf.float32, [None, self.num_output]) 
-
-			if(loss_type == 'cross_entropy'):
-				loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.__prediction, labels=output_tensor))
-			return loss
+			loss_fn = LossCORHeader.get(loss_type)
+			return tf.reduce_mean(loss_fn(logits=self.__prediction, labels=output_tensor))
 
 		def __getOptimizer(self, optimizer_type, learning_rate):
 			optimizer = None
@@ -87,12 +86,12 @@ class SingleLayerLSTMNetwork(ModelInterface):
 
 			self.__prediction = tf.nn.softmax(tf.matmul(last_timestamp, init_weight) + init_bias)
 			self.__setObjective()
-			
+
 		def getModel(self):
 			pass
 
 if __name__ == "__main__":
 	lstm = SingleLayerLSTMNetwork()
 	lstm.setHiddenUnits(100).setInputSize(160).setOutputSize(12).setTimeSteps(40) \
-		.setLossFunction('cross_entropy').setOptimizer('gradient_descent').setLearningRate(0.01) \
+		.setLossFunction('cross_enthropy').setOptimizer('gradient_descent').setLearningRate(0.01) \
 		.build()
